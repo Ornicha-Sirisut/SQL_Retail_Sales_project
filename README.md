@@ -40,11 +40,45 @@ WHERE transactions_id IS NULL
 
 ## 📊 Business Analysis & Insights
 This project answers key business questions, including:
-1. Total number of sales transactions
-2. Top-selling product categories
-3. Average customer age by category
-4. Monthly sales trends and best-performing months
+1. Total number of sales transactions --> 1997
+```sql
+select count(*) as total_trans
+from retail_sales_new ;
+```
+2. Top-selling product categories --> Electronics
+```sql
+select	category,
+	sum(total_sale) as net_sale
+from retail_sales_new 
+group by 1
+order by net_sale DESC ;
+```
+3. Average customer age by category -->
+```sql
+select 	category,
+	ROUND(avg(age),2) as AVG_AGE
+from retail_sales_new
+group by category
+order by avg_age DESC ;
+```
+4. Monthly sales trends and best-performing months --> december 2022
+```sql
+select	Extract(Year from sale_date) as YEAR,
+	Extract(Month from sale_date) as MONTH, 
+	sum(total_sale) as monthly_sale
+from retail_sales_new
+group by 1,2 
+order by year, month ;
+```
 5. Top 5 customers by total sales
+```sql
+select	customer_id,
+	sum(total_sale) as total_sales
+from retail_sales_new
+group by 1
+order by total_sales desc
+limit 5 ;
+```
 
 The following SQL queries were developed to answer specific business questions:
 
@@ -115,78 +149,53 @@ FROM (
 WHERE RANK = 1;
 ```
 
-**Q.8 Write a SQL query to find the top 5 customers based on the highest total sales**
+**Q.8 Write a SQL query to find the top 5 customers based on the highest total sales.**
 ```sql
-SELECT 
-    customer_id,
-    SUM(total_sale) as total_sales
-FROM retail_sales
-GROUP BY 1
+SELECT customer_id,
+       SUM(total_sale) AS total_sale
+FROM retail_sales_new
+GROUP BY customer_id
 ORDER BY 2 DESC
 LIMIT 5
 ```
 
-**Q.9 Write a SQL query to find the number of unique customers who purchased items from each category.**:
+**Q.9 Write a SQL query to find the number of unique customers who purchased items from each category.**
 ```sql
-SELECT 
-    category,    
-    COUNT(DISTINCT customer_id) as cnt_unique_cs
-FROM retail_sales
-GROUP BY category
+select category, 
+	count(DISTINCT customer_id) 
+from retail_sales_new
+GROUP BY 1
 ```
+
 **Q.10 Write a SQL query to create each shift and number of orders (Example Morning <12, Afternoon Between 12 & 17, Evening >17)**
 ```sql
 WITH hourly_sale
 AS
 (
-SELECT *,
-    CASE
-        WHEN EXTRACT(HOUR FROM sale_time) < 12 THEN 'Morning'
-        WHEN EXTRACT(HOUR FROM sale_time) BETWEEN 12 AND 17 THEN 'Afternoon'
-        ELSE 'Evening'
-    END as shift
-FROM retail_sales
-)
-SELECT 
-    shift,
-    COUNT(*) as total_orders    
-FROM hourly_sale
-GROUP BY shift
-```
-
-Example Query:
-```sql
--- Find the top 5 customers based on total sales
-SELECT customer_id, SUM(total_sale) AS total_sales
+SELECT * ,
+	CASE 
+		when EXTRACT(HOUR FROM sale_time) < 12 then 'Morning'
+		when EXTRACT (HOUR FROM sale_time) BETWEEN 12 AND 17 then 'Afternoon'
+		else 'Evening'
+	END as SHIFT
 FROM retail_sales_new
-GROUP BY customer_id
-ORDER BY total_sales DESC
-LIMIT 5;
+)
+SELECT
+	shift,
+	count(*) as total_order
+FROM hourly_sale
+GROUP BY 1
 ```
-Full analysis queries are in `sql_queries/business_analysis.sql`.
 
 ## 📈 Insights & Findings
 Some key takeaways from this project:
-- The most popular product category is **Clothing**.
-- The **Afternoon shift** (12 PM - 5 PM) has the highest number of transactions.
-- The best sales month in 2022 was **November**.
-
-For more insights, check `reports/insights.md`.
-
-## 🚀 How to Use This Project
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/yourusername/Retail_Sales_SQL.git
-   ```
-2. Load the `schema.sql` into your SQL database.
-3. Run the scripts in `sql_queries/` for data exploration and analysis.
+- The most popular product category is **Electronics**.
+- The **Evening** (12 PM - 5 PM) has the highest number of transactions.
+- The best sales month in 2022 was **December**.
 
 ## 📜 License
 This project is licensed under the [MIT License](LICENSE).
 
-## 🤝 Contributing
-Contributions are welcome! If you find issues or have suggestions, feel free to open an issue or a pull request.
 
 ---
-💡 *This project is part of my Data Analytics Portfolio. Feel free to explore and connect with me on [GitHub](https://github.com/yourusername).*
 
