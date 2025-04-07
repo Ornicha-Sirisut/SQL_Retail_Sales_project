@@ -193,9 +193,5 @@ Some key takeaways from this project:
 - The **Evening** (12 PM - 5 PM) has the highest number of transactions.
 - The best sales month in 2022 was **December**.
 
-## 📜 License
-This project is licensed under the [MIT License](LICENSE).
-
-
 ---
 
