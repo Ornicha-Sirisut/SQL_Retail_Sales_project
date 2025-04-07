@@ -53,15 +53,7 @@ from retail_sales_new
 group by 1
 order by net_sale DESC ;
 ```
-3. Average customer age by category -->
-```sql
-select 	category,
-	ROUND(avg(age),2) as AVG_AGE
-from retail_sales_new
-group by category
-order by avg_age DESC ;
-```
-4. Monthly sales trends and best-performing months --> december 2022
+3. Monthly sales trends and best-performing months --> december 2022
 ```sql
 select	Extract(Year from sale_date) as YEAR,
 	Extract(Month from sale_date) as MONTH, 
@@ -70,7 +62,7 @@ from retail_sales_new
 group by 1,2 
 order by year, month ;
 ```
-5. Top 5 customers by total sales
+4. Top 5 customers by total sales
 ```sql
 select	customer_id,
 	sum(total_sale) as total_sales
